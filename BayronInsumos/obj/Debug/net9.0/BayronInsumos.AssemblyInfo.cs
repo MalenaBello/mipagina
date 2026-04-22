@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BayronInsumos")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+52fd68ea0ab46921ca7db4c36dea5b9944d49834")]
 [assembly: System.Reflection.AssemblyProductAttribute("BayronInsumos")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BayronInsumos")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

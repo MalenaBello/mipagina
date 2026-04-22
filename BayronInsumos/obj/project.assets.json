@@ -3116,11 +3116,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\PC\\BayronInsumos\\BayronInsumos.csproj",
+      "projectUniqueName": "C:\\Users\\PC\\Desktop\\SistemaDeLimpieza_MVP\\BayronInsumos\\BayronInsumos.csproj",
       "projectName": "BayronInsumos",
-      "projectPath": "C:\\Users\\PC\\BayronInsumos\\BayronInsumos.csproj",
+      "projectPath": "C:\\Users\\PC\\Desktop\\SistemaDeLimpieza_MVP\\BayronInsumos\\BayronInsumos.csproj",
       "packagesPath": "C:\\Users\\PC\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\PC\\BayronInsumos\\obj\\",
+      "outputPath": "C:\\Users\\PC\\Desktop\\SistemaDeLimpieza_MVP\\BayronInsumos\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\PC\\AppData\\Roaming\\NuGet\\NuGet.Config"
