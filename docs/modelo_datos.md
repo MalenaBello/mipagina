@@ -5,9 +5,10 @@ Antes del diseño técnico, definimos los conceptos clave del negocio:
 * **Producto:** Insumo de limpieza individual (ej: Lavandina 1L). Tiene un precio unitario y un stock disponible.
 * **Cliente:** Persona que realiza la compra. El sistema debe recordar su nombre, dirección y teléfono para agilizar futuros pedidos.
 * **Carrito:** Conjunto temporal de productos que el cliente selecciona antes de confirmar.
-* **Pedido:** Es la orden de compra final. Vincula al cliente con una lista de productos, un total a pagar y un método de pago.
+* **Pedido:** Es la orden de compra final. vincula al cliente con todos sus productos, y representa el estado del pedido hasta que sea entregado. 
 * **Estado del Pedido:** Indica en qué parte del proceso está la venta (Pendiente de pago, Preparando, Enviado).
 * **Comprobante:** Imagen o captura de la transferencia que el cliente debe enviar para validar pagos por QR.
+* **pedidoDetalle:** 
 
 ---
 
@@ -46,3 +47,23 @@ Antes del diseño técnico, definimos los conceptos clave del negocio:
 | productoId | int | no | Fk de la tabla de producto| 
 | cantidad | int   |  no | cantidades de unidades elegidas | 
 | fechaCreacion | DateTime | no | regla: Si fechaCreacion > 24 hs. Se elimina 
+
+
+### tabla: Pedido
+
+|campo | tipo | nuleable | descripcion |
+| :--- | :--- | :--- | :---|
+| id   | int | notnull| id univoco del pedido realizado|  
+| estado | string | notNull | estado de entrega del pedido| 
+| fechaDeEntrega| dateTime | null| fecha estimada de entrega | 
+| total | Double | notNull | total final pagado por el pedido |
+
+
+### tabla: detallePedido 
+
+| campo | tipo |nuleable | descripcion |
+| :--- | :--- | :--- | :--- |
+| id | int | notNull | id univoco del detalle | 
+| pedidoId | int | notNull | fk del pedido | 
+| id | int | notNull | fk del producto  | 
+| cantidad | int | notNull | cantidad de unidades del insumo |

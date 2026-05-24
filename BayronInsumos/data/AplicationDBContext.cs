@@ -16,4 +16,6 @@ public class AplicacionDBcontext: DbContext
     public DbSet<Cliente> clientes {get;set;}
     public DbSet<Carrito> Carritos {get;set;}
     public DbSet<CarritoItem> ITemsCarrito {get;set;}
+    public DbSet<Pedido> pedidos {get;set;}
+    public DbSet <detallePedido> detallePedidos {get;set;}
 }
