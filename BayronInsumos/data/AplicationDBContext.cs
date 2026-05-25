@@ -1,11 +1,12 @@
-using Microsoft.EntityFrameworkCore; //traductor
+using Microsoft.EntityFrameworkCore; 
 using BayronInsumos;
+using BayronInsumos.Models;
 
-namespace BayronInsumos;
+namespace BayronInsumos.Data;
 
-public class AplicacionDBcontext: DbContext
+public class AplicacionDBContext: DbContext
 {
-    public AplicacionDBcontext(DbContextOptions<AplicacionDBcontext> options): base(options)
+    public AplicacionDBContext(DbContextOptions<AplicacionDBContext> options): base(options)
     //recibe la configuracion de program.cs y se la pasa a la clase base para conectrse 
 
     {
@@ -15,7 +16,7 @@ public class AplicacionDBcontext: DbContext
     public DbSet<Producto> Productos {get;set;}
     public DbSet<Cliente> clientes {get;set;}
     public DbSet<Carrito> Carritos {get;set;}
-    public DbSet<CarritoItem> ITemsCarrito {get;set;}
+    public DbSet<CarritoItem> CarritoItems {get;set;}
     public DbSet<Pedido> pedidos {get;set;}
-    public DbSet <detallePedido> detallePedidos {get;set;}
+    public DbSet <DetallePedido> detallePedidos {get;set;}
 }

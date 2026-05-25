@@ -1,13 +1,13 @@
-namespace BayronInsumos;
+using System.Threading.Tasks;
+using BayronInsumos.Models;
 
-public interface ICarritoRepository
+namespace BayronInsumos.Data
 {
-    Carrito? ObtenerPorId (int id);
-
-    void agregarProducto (int carritoId, int productoId, int cantidad);
-
-    void eliminarProducto (int carritoId, int productoId);
-
-    void vaciarCarrito  (int carritoId);
-
+    public interface ICarritoRepository
+    {
+        Task<Carrito?> ObtenerPorClienteId(int clienteId);
+        Task<bool> GuardarOActualizarItem(int clienteId, int productoId, int cantidad);
+        Task<bool> EliminarItem(int clienteId, int productoId);
+        Task<bool> VaciarCarrito(int clienteId);
+    }
 }

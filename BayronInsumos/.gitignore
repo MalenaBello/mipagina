@@ -1,7 +1,18 @@
-[Bb]in/
-[Oo]bj/
-.vs/
+# Carpetas de compilación de .NET
+bin/
+obj/
+
+# Configuraciones del editor (VS Code / Visual Studio)
 .vscode/
+.vs/
 *.user
 *.suo
+
+# Base de datos local (¡Subir la base de datos con datos de prueba rompe todo!)
 *.db
+*.db-shm
+*.db-wal
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db

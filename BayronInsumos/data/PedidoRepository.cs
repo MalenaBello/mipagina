@@ -1,53 +1,63 @@
-using System;
-using System.Threading.Tasks;
+
 using Microsoft.EntityFrameworkCore;
+
 using BayronInsumos.Models;
 
-namespace BayronInsumos;
-
-public class PedidoRepository : IPedidoRepository
+namespace BayronInsumos.Data
 {
-    private readonly AplicacionDBcontext _Context; 
-
-    public PedidoRepository(AplicacionDBcontext context)
+    public class PedidoRepository : IPedidoRepository
     {
-        _Context = context;
-    }
+        private readonly AplicacionDBContext _context;
 
-    public async Task<int> crearPedido(Pedido nuevoPedido)
-    {
-         _Context.Add(nuevoPedido); 
-         await _Context.SaveChangesAsync();   
-         return nuevoPedido.id;
-    }
-
-    public async Task<Pedido?> BuscarPorId(int PedidoId)
-    {
-        return await _Context.pedidos
-            .Include(p => p.Detalles)
-            .FirstOrDefaultAsync(p => p.id == PedidoId);
-    }
-    
-    // Tu lógica general: si pasa a entregado, clava la fecha de entrega
-    public async Task<bool> modificarEstado(int pedidoId, EstadoPedido nuevoEstado)
-    {
-        var pedidoExistente = await this.BuscarPorId(pedidoId);
-        if (pedidoExistente == null) return false;
-        
-        pedidoExistente.estado = nuevoEstado; 
-
-        if (nuevoEstado == EstadoPedido.Entregado)
+        public PedidoRepository(AplicacionDBContext context)
         {
-            pedidoExistente.fechaEntrega = DateTime.Now; 
+            _context = context;
         }
-        
-        int filasAfectadas = await _Context.SaveChangesAsync();
-        return filasAfectadas > 0;
-    }
 
-    // Tu método de cancelar
-    public async Task<bool> CancelarPedido(int pedidoId)
-    {
-        return await this.modificarEstado(pedidoId, EstadoPedido.Cancelado);
+        public async Task<int> CrearPedido(Pedido nuevoPedido)
+        {
+            await _context.pedidos.AddAsync(nuevoPedido);
+            await _context.SaveChangesAsync();
+            return nuevoPedido.id; 
+        }
+
+        public async Task<Pedido?> BuscarPorId(int pedidoId)
+        {
+            return await _context.pedidos.FindAsync(pedidoId);
+        }
+
+        public async Task<bool> modificarEstado(int pedidoId, EstadoPedido nuevoEstado)
+        {
+            var pedidoExistente = await this.BuscarPorId(pedidoId);
+            if (pedidoExistente == null) return false;
+
+            pedidoExistente.estadoPedido = nuevoEstado; 
+            int filasAfectadas = await _context.SaveChangesAsync(); 
+            return filasAfectadas > 0;
+        }
+
+        public async Task<IEnumerable<Pedido>> ListarPedidosTodos()
+        {
+            return await _context.pedidos.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Pedido>> ListarPedidosPendientes()
+        {
+            return await _context.pedidos
+                .Where(p => p.estadoPedido == EstadoPedido.pendiente)
+                .ToListAsync();
+        }
+
+        public async Task<bool> CancelarPedido(int pedidoId)
+        {
+            return await this.modificarEstado(pedidoId, EstadoPedido.cancelado);
+        }
+
+        public async Task<EstadoPedido?> mostrarEstado(int idPedido)
+        {
+            var pedido = await this.BuscarPorId(idPedido);
+            if (pedido == null) return null; 
+            return pedido.estadoPedido;
+        }
     }
 }

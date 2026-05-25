@@ -1,4 +1,6 @@
-namespace BayronInsumos; 
+using System;
+using System.Collections.Generic;
+namespace BayronInsumos.Models; 
 
 public class Pedido
 {
@@ -8,6 +10,7 @@ public class Pedido
     public DateTime? fechaDeEntrega {get;set;} //nuleable
 
     public double total {get;set;} // notNull.
-    public List <detallePedido> Detalles {get;set;} = new List<detallePedido>();
+    public List <DetallePedido> Detalles {get;set;} = new List<DetallePedido>();
+  
     
 }

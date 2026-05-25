@@ -1,45 +1,92 @@
+
+using BayronInsumos.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace BayronInsumos;
-
-public class CarritoRepository: ICarritoRepository
+namespace BayronInsumos.Data
 {
-    private readonly AplicacionDBcontext _Context; 
+    public class CarritoRepository : ICarritoRepository
+    {
+        private readonly AplicacionDBContext _context;
 
-    public CarritoRepository (AplicacionDBcontext context)
-    {
-        _Context = context;
-    }
-    public Carrito? ObtenerPorId (int id) => _Context.Carritos.Include(c => c.ITem).ThenInclude(i => i.productoId).FirstOrDefault(c => c.id ==id);
+        public CarritoRepository(AplicacionDBContext context)
+        {
+            _context = context;
+        }
 
-    public void agregarProducto (int carritoId, int productoId, int cantidad)
-    {
-        var itemExis = _Context.ITemsCarrito.FirstOrDefault(i => i.CarritoId == carritoId && i.ProductoId ==productoId);
-        if ( itemExis != null)
+        // Obtener Carrito del cliente con sus ítems adentro
+        public async Task<Carrito?> ObtenerPorClienteId(int clienteId)
         {
-            itemExis.Cantidad += cantidad; // si existia lo sumamos 
+            return await _context.Carritos
+                .Include(c => c.Items) // Carga tu lista "Items"
+                    .ThenInclude(i => i.Producto) // Carga el producto de cada ítem
+                .FirstOrDefaultAsync(c => c.ClienteID == clienteId);
         }
-    } 
-    public void eliminarProducto (int carritoId, int productoId)
-    {
-        //buscamos el item especifico 
-        var item = _Context.ITemsCarrito.FirstOrDefault(i => i.CarritoId == carritoId && i.ProductoId == productoId);
-        if (item == null) return;
-        if (item.Cantidad > 1)
+
+        //  Guardar o Actualizar un producto dentro del carrito
+        public async Task<bool> GuardarOActualizarItem(int clienteId, int productoId, int cantidad)
         {
-            item.Cantidad--; 
+            var carrito = await this.ObtenerPorClienteId(clienteId);
+
+            // Si el cliente no tiene carrito, le creamos la cabecera
+            if (carrito == null)
+            {
+                carrito = new Carrito 
+                { 
+                    ClienteID = clienteId,
+                    fechaCreacion = DateTime.Now
+                };
+                await _context.Carritos.AddAsync(carrito);
+                await _context.SaveChangesAsync(); // Guardamos para generar el id del carrito
+            }
+
+            // Buscamos si el producto ya existe en los Items de este carrito
+            var itemExistente = carrito.Items.FirstOrDefault(i => i.productoId == productoId);
+
+            if (itemExistente == null)
+            {
+                // Si el producto es nuevo en el carrito, creamos un CarritoItem
+                var nuevoItem = new Models.CarritoItem 
+                { 
+                    CarritoID = carrito.id, 
+                    productoId = productoId, 
+                    cantidad = cantidad 
+                };
+                await _context.CarritoItems.AddAsync(nuevoItem);
+            }
+            else
+            {
+                // Si ya existía, le sumamos la cantidad nueva
+                itemExistente.cantidad += cantidad;
+                _context.CarritoItems.Update(itemExistente);
+            }
+
+            int filasAfectadas = await _context.SaveChangesAsync();
+            return filasAfectadas > 0;
         }
-        else {
-            _Context.ITemsCarrito.Remove(item);
-            
+
+        //  Eliminar un ítem específico del carrito
+        public async Task<bool> EliminarItem(int clienteId, int productoId)
+        {
+            var carrito = await this.ObtenerPorClienteId(clienteId);
+            if (carrito == null) return false;
+
+            var item = carrito.Items.FirstOrDefault(i => i.productoId == productoId);
+            if (item == null) return false;
+
+            _context.CarritoItems.Remove(item);
+            int filasAfectadas = await _context.SaveChangesAsync();
+            return filasAfectadas > 0;
         }
-        _Context.SaveChanges();
+
+        // Vaciar todo el carrito
+        public async Task<bool> VaciarCarrito(int clienteId)
+        {
+            var carrito = await this.ObtenerPorClienteId(clienteId);
+            if (carrito == null) return false;
+
+            _context.CarritoItems.RemoveRange(carrito.Items);
+            int filasAfectadas = await _context.SaveChangesAsync();
+            return filasAfectadas > 0;
         }
-    
-    public void vaciarCarrito  (int carritoId)
-    {
-        var item = this.ObtenerPorId(carritoId);
-        _Context.Carritos.RemoveRange(item);
-        _Context.SaveChanges();
     }
 }

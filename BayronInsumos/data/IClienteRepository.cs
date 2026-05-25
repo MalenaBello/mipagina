@@ -1,12 +1,14 @@
-namespace BayronInsumos;
+using BayronInsumos.Models;
+namespace BayronInsumos.Data;
 
 public interface IClienteRepository
 {
-    IEnumerable<Cliente>ObtenerTodo();
+   Task <IEnumerable<Cliente>>ObtenerTodos();
 
-    void Agregar (Cliente cliente);
+    Task <bool> Agregar (Cliente cliente);
 
-    Cliente? ObtenerPorId(int id);
+    Task <Cliente?> obtenerPorId(int id);
 
-    Cliente? obtenerPorMail(String mail);
+    Task<Cliente?> obtenerPorEmail(String mail);
+    Task <bool> ActualizarDatos(Cliente clienteModificado);
 }
